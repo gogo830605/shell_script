@@ -1,0 +1,5 @@
+~/.bashrc
+
+shopt設定
+history相關設定
+alias相關設定

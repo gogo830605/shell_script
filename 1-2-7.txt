@@ -1,0 +1,7 @@
+printf 比 echo 輸出更多元化，還可以代數參數...等功能，以下為 printf 的範例
+
+將"World"帶入%s中，所以輸出會是 "Hello, World!"
+printf "Hello, %s!" "World"
+
+將數字42帶入%d中，輸出會是"The number is 42"
+printf "The number is %d\n" 42

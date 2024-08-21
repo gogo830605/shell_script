@@ -1,0 +1,4 @@
+/etc/profile
+
+bash如果不是 /bin/sh 的話 /etc/bash.bashrc 又存在就會去執行 /etc/bash.bashrc
+/etc/profile.d 如果存在的話就會去執行 /etc/profile.d 底下的所有 .sh 檔

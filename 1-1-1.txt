@@ -1,0 +1,11 @@
+列出所使用的系統及版本
+cat /etc/os-release
+
+列出bash有關的版本、檔案、路徑、組態、文件
+bash版本
+/bin/bash --version
+bash檔案路徑
+cat /etc/shells
+bash組態文件
+/etc/bash.bashrc
+~/.bashrc
