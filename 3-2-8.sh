@@ -10,14 +10,38 @@ function getDice () {
 	dice[3]=$(( RANDOM % 6 + 1 ))
 	dice[4]=$(( RANDOM % 6 + 1 ))
 
-	#dice[1]=3
-	#dice[2]=3
-	#dice[3]=3
-	#dice[4]=3
+	#dice[1]=1
+	#dice[2]=1
+	#dice[3]=1
+	#dice[4]=1
 	echo ${dice[@]}
 }
 
-function getPoint () {	
+# 確認是否為豹子
+function getPoint1 () {
+	local totalPoint=0
+    if [[ ${dice[*]} == '1 1 1 1' || ${dice[*]} == '2 2 2 2' || ${dice[*]} == '3 3 3 3' || ${dice[*]} == '4 4 4 4' || ${dice[*]} == '5 5 5 5 ' || ${dice[*]} == '6 6 6 6' ]]            then
+        totalPoint=18
+	fi
+
+	echo $totalPoint
+}
+
+# 確認是否為兩兩相對的點數
+function getPoint2 () {
+	local totalPoint=0
+	local sortedDice=($(printf "%s\n" "${dice[@]}" | sort))
+
+	if [[ ${sortedDice[0]} -eq ${sortedDice[1]} && ${sortedDice[2]} -eq ${sortedDice[3]} && ${sortedDice[0]} -ne ${sortedDice[2]} ]]
+	then
+    	((totalPoint=${sortedDice[2]}+${sortedDice[3]}))
+	fi
+
+	echo $totalPoint
+}
+
+# 確認是否有點數
+function getPoint3 () {
 
 	local point
 	for (( i=1; i<=4; i++))
@@ -44,20 +68,40 @@ function getPoint () {
 		fi
 	done
 
-	totalPoint=0
-	if [[ ${dice[*]} == '1 1 1 1' || ${dice[*]} == '2 2 2 2' || ${dice[*]} == '3 3 3 3' || ${dice[*]} == '4 4 4 4' || ${dice[*]} == '5 5 5 5 ' || ${dice[*]} == '6 6 6 6' ]]
+	local totalPoint=0
+	if [ ${#point[@]} -eq 2 ]
 	then
-		totalPoint=18
-	else
-		if [ ${#point[@]} -eq 2 ]
-		then
-			for p in ${point[@]}
-			do
-				((totalPoint+=p))
-			done
-		fi
+		for p in ${point[@]}
+		do
+			((totalPoint+=p))
+		done
 	fi
 	echo $totalPoint
+}
+
+function getPoint () {
+	totalPoint=$(getPoint1)
+	if [ $totalPoint -ne 0 ]
+	then
+		echo $totalPoint
+		return 0
+	fi
+
+	totalPoint=$(getPoint2)
+    if [ $totalPoint -ne 0 ]
+    then
+        echo $totalPoint
+        return 0
+    fi
+
+	totalPoint=$(getPoint3)
+	if [ $totalPoint -ne 0 ]
+    then
+        echo $totalPoint
+        return 0
+    fi
+
+	echo 0
 }
 
 read -p "total bet : " totalBet
@@ -74,12 +118,17 @@ do
 	do
 		echo 'Dealer throw dice...'
 		getDice
-		getPoint
+		#getPoint
 		dealerPoint=$(getPoint)
 		echo "Dealer point is $dealerPoint"
 	done
-
+	
 	read -p "How much do you want to bet : " bet
+	until [ $bet -le $totalBet ]
+	do
+		[ $bet -gt $totalBet ] && echo "you don't have enough money"
+		read -p "How much do you want to bet : " bet
+	done
 
 	playerPoint=0
 	while [ $playerPoint -eq 0 ]
@@ -95,7 +144,7 @@ do
 	then
 		result='No loss, No win'
 	else
-		if [ $dealerPoint -gt $playerPoint ]
+		if [[ $dealerPoint -gt $playerPoint ]]
 		then
 			((totalBet-=bet))
 			result='You loss'
@@ -108,15 +157,23 @@ do
 	((round++))
 	echo "$result , Your total bet is $totalBet"
 	echo '======================'
+	
+	nextRound=''
+	#echo 'Do you want to continue? (y/n)'
+	#read -n 1 nextRound
+	#echo
+	read -p "Do you want to continue? (y/n) " -n 1 nextRound
+	echo
+	if [[ $nextRound == 'y' || $nextRound == 'Y' ]]
+	then
+		continue
+	elif [[ $nextRound == 'n' || $nextRound == 'N' ]]
+	then
+		break
+	else
+		echo 'only y or n can be entered'
+	fi
 done
 
-
-
-
-
-
-
-
-
-
+echo "thank you for coming to play"
 
