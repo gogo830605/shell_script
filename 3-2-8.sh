@@ -106,7 +106,7 @@ function getPoint () {
 
 read -p "total bet : " totalBet
 
-[[ ! $totalBet =~ ^[0-9]+$ ]] && echo 'total bet only number can be enterd' && exit 1
+[[ ! $totalBet =~ ^[0-9]+$ ]] && echo 'total bet only number can be entered' && exit 1
 
 round=1
 
